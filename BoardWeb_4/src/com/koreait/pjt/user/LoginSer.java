@@ -32,7 +32,7 @@ public class LoginSer extends HttpServlet {
 		param.setUser_id(user_id);
 		param.setUser_pw(encrypt_pw);
 		
-		int result = UserDAO.selUser(param);
+		int result = UserDAO.login(param);
 		
 	     if(result != 1) { // 에러 처리
 	         String msg = null;

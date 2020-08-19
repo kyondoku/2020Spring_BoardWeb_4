@@ -16,12 +16,11 @@ public class UserDAO {
 				+ " (seq_user.nextval, ?, ?, ?, ?) ";
 		
 //		new JdbcUpdateInterface() ~~~~~~ return ps.executeUpdate() 까지 
-//		----> 익명클래스 (파라미터에서 새로 클래스를 생성해서 사용한다)
+//		----> 익명클래스 (파라미터에서 새로 클래스를 생성해서 사용한다) 
 
 		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
 			@Override
 			public int update(PreparedStatement ps) throws SQLException {
-			
 				ps.setNString(1, param.getUser_id());
 				ps.setNString(2, param.getUser_pw());
 				ps.setNString(3, param.getNm());
@@ -34,18 +33,17 @@ public class UserDAO {
 	
 	
 	//0: 에러 발생, 1: 로그인 성공, 2: 비밀번호 틀림, 3: 아이디 없음
-	public static int selUser(UserVO param) {
+	public static int login(UserVO param) {
 		int result = 0;
 		
 		String sql = " SELECT i_user, user_pw, nm "
 				+ "FROM t_user "
 				+ "WHERE user_id = ?";
-		
+//												익명클래스로 객체화 한것
 		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 			@Override
-			public ResultSet prepared(PreparedStatement ps) throws SQLException {
+			public void prepared(PreparedStatement ps) throws SQLException {
 				ps.setNString(1, param.getUser_id());
-				return ps.executeQuery();
 			}
 			@Override
 			public int executeQuery(ResultSet rs) throws SQLException {

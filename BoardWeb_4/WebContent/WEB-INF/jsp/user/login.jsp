@@ -12,7 +12,7 @@
 <body>
 	<h1>로그인</h1>
 	<div>
-		<form id="frm" action="/login" method="post" onclick="return chk()">
+		<form id="frm" action="/login" method="post" onsubmit="return chk()">
 			<div><input type="text" name="user_id" value="${user_id}" placeholder="아이디"></div>
 			<div><input type="password" name="user_pw" placeholder="비밀번호"></div>
 			<div id="err">${msg}</div>
