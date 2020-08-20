@@ -31,6 +31,6 @@ public class BoardListSer extends HttpServlet {
 	    List<BoardVO> list = BoardDAO.selBoardList();
 	    request.setAttribute("list", list);
 		
-	    ViewResolver.forward("board/list", request, response);
+	    ViewResolver.forwardLoginChk("board/list", request, response);
 		}
 	}

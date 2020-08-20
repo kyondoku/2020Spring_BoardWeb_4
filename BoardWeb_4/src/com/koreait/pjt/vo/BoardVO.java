@@ -8,7 +8,15 @@ public class BoardVO {
 	private int i_user;
 	private String r_dt;
 	private String m_dt;
+	private String nm;
 	
+	
+	public String getNm() {
+		return nm;
+	}
+	public void setNm(String nm) {
+		this.nm = nm;
+	}
 	public int getI_board() {
 		return i_board;
 	}

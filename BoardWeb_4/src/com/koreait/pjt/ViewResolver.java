@@ -11,5 +11,13 @@ public class ViewResolver {
 		String jsp = String.format("/WEB-INF/jsp/%s.jsp", fileNm);
 		request.getRequestDispatcher(jsp).forward(request, response);
 	}
+	
+	public static void forwardLoginChk(String fileNm, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if(MyUtils.isLogout(request)) {
+			response.sendRedirect("/login");
+			return;
+		}
+		forward(fileNm, request, response);
+	}
 
 }
