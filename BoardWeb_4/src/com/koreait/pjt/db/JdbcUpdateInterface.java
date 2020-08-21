@@ -6,5 +6,5 @@ import java.sql.SQLException;
 					
 // 추상클래스의 개념 알기.
 public abstract interface JdbcUpdateInterface {
-	int update(PreparedStatement ps) throws SQLException;
+	void update(PreparedStatement ps) throws SQLException;
 }

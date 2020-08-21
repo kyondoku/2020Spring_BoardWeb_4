@@ -37,7 +37,8 @@ public class JdbcTemplate {
 			con = DbCon.getCon();
 			ps = con.prepareStatement(sql);
 			
-			result = jdbc.update(ps);
+			jdbc.update(ps);
+			result = ps.executeUpdate();
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {

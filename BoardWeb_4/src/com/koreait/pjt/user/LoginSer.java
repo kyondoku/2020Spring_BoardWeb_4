@@ -20,7 +20,15 @@ public class LoginSer extends HttpServlet {
        
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ViewResolver.forward("user/login", request, response);
+		
+		HttpSession hs = request.getSession();
+		UserVO param = (UserVO)hs.getAttribute(Const.LOGIN_USER);
+		
+		if(param == null) {
+			ViewResolver.forward("/user/login", request, response);
+		} else {
+			response.sendRedirect("/board/list");
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,13 +46,13 @@ public class LoginSer extends HttpServlet {
 	         String msg = null;
 	         switch(result) {
 	         case 2:
-	            msg = "비밀번호를 확인해주세요.";
+	            msg = "비밀번호를 확인해주세요";
 	            break;
 	         case 3:
-	            msg = "존재하지 않는 아이디입니다.";
+	            msg = "존재하지 않는 아이디입니다";
 	            break;
 	         default:
-	            msg = "에러가 발생했습니다."; // DB의 상태가 좋지 못할 때 발생
+	            msg = "에러가 발생했습니다"; // DB의 상태가 좋지 못할 때 발생
 	         }
 	         request.setAttribute("user_id", user_id);
 	         request.setAttribute("msg", msg);
@@ -54,6 +62,8 @@ public class LoginSer extends HttpServlet {
 	      // 정상적인 작동을 할 때
 	      HttpSession hs = request.getSession();
 	      hs.setAttribute(Const.LOGIN_USER, param);
+	      
+	      
 
 	      System.out.println("로그인 성공!");
 	      response.sendRedirect("/board/list");

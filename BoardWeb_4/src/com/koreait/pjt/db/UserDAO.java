@@ -20,13 +20,11 @@ public class UserDAO {
 
 		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
 			@Override
-			public int update(PreparedStatement ps) throws SQLException {
+			public void update(PreparedStatement ps) throws SQLException {
 				ps.setNString(1, param.getUser_id());
 				ps.setNString(2, param.getUser_pw());
 				ps.setNString(3, param.getNm());
 				ps.setNString(4, param.getEmail());
-				
-				return ps.executeUpdate();
 			}
 		});
 	}
@@ -34,7 +32,6 @@ public class UserDAO {
 	
 	//0: 에러 발생, 1: 로그인 성공, 2: 비밀번호 틀림, 3: 아이디 없음
 	public static int login(UserVO param) {
-		int result = 0;
 		
 		String sql = " SELECT i_user, user_pw, nm "
 				+ "FROM t_user "

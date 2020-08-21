@@ -22,6 +22,13 @@
 		cursor: pointer; 
 	}
 	
+	.button:hover {
+		background: #bdbdbd; 
+		transition: 0.2s;
+		color: black;
+		cursor: pointer; 
+	}
+	
 	html, body {
 		font-family: 'Noto Sans KR', sans-serif;
 		font-weight: 400;
@@ -39,9 +46,9 @@
 	
 	.rsub {
 		margin-left: 20px;
-		height: 64%;
+		height: 50%;
 
-		text-align: right;
+		text-align: left;
 	}
 	
 	table {
@@ -54,6 +61,8 @@
 	
 	th, td, tr {
 		border: none;
+		font-size: 16px;
+		height: 28px;
 	}
 	
 	.th {
@@ -67,10 +76,16 @@
 	
 	.button {
 		background: white;
-		width: 60px;
+		width: 70px;
 		height: 30px;
-		font-size: 12px;
+		font-size: 14px;
 		border: 1px solid black;
+		margin-left: 5px;
+	}
+
+	.emoji {
+		text-align: center;
+		font-size: 30px;
 	}
 		
 	td { border-collapse: collapse; }
@@ -94,7 +109,7 @@
 					<td>${item.title}</td>
 					<td>${item.nm}</td>
 					<td>${item.hits}</td>
-					<td>${item.r_dt}</td>
+					<td>${item.r_dt == item.m_dt ? item.r_dt : item.m_dt}</td>
 				</tr>
 				</c:forEach>
 			</table><hr>
@@ -102,13 +117,21 @@
 			</div>
 			<div class="rsub">
 				<p class="title">게시판<br>리스트</p>
-				<p class="welcome"><span style="font-weight: bold">${loginUser.nm }</span>님<br>환영합니다</p>
+				<div><p class="welcome"><span style="font-weight: bold">${loginUser.nm }</span>님<br>환영합니다</p></div>
+				<div><button class="button" onclick="check()">로그아웃</button></div>
+				<div class="emoji">🙋‍♂️</div>
 			</div>
 		</div>
 	</div>
 	<script>
 		function moveToDetail(i_board) { 
 			location.href = 'detail?i_board='+i_board	
+		}
+		
+		function check(){
+			if(confirm('로그아웃 하시겠습니까?')){
+				location.href = '/logout'
+			}
 		}
 	</script>
 </body>

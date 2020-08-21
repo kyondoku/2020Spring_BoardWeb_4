@@ -3,6 +3,7 @@ package com.koreait.pjt.board;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,9 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.koreait.pjt.Const;
+import com.koreait.pjt.MyUtils;
 import com.koreait.pjt.ViewResolver;
 import com.koreait.pjt.db.BoardDAO;
 import com.koreait.pjt.vo.BoardVO;
+import com.koreait.pjt.vo.UserVO;
 
 @WebServlet("/board/detail")
 public class BoardDetailSer extends HttpServlet {
@@ -23,23 +26,41 @@ public class BoardDetailSer extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //		ViewResolver.forwardLoginChk("board/detail", request, response);
 //      }
-	
+		
+		UserVO loginUser = MyUtils.getLoginUser(request);
+		if(loginUser == null) {
+			response.sendRedirect("/login");
+			return;
+		}
+		
 		String strI_board = request.getParameter("i_board");
-		int i_board = Integer.parseInt(strI_board);
-		String title = request.getParameter("title");
+		int i_board = MyUtils.parseStrToInt(strI_board);
+
+		BoardVO param = new BoardVO();
+		param.setI_board(i_board);
+		
+		BoardVO data = BoardDAO.selBoard(i_board);
+
+		//		단독으로 조회수 올리기 방지! --- [start]
+		ServletContext application = getServletContext();
+//		integer도 int랑 똑같이 쓰면 되는데, integet는 null을 담을수 있다.
+		Integer readI_user = (Integer)application.getAttribute("read_" + strI_board);
+		if(readI_user == null || readI_user != loginUser.getI_user()) {
+			data.setHits(data.getHits()+1);
+			BoardDAO.addHits(data);
+			application.setAttribute("read_" + strI_board, loginUser.getI_user());
+//															마지막으로 읽은 사람의 pk값을 저장
+		}
+//		단독으로 조회수 올리기 방지! --- [end]
 		
 		if(i_board == 0) {
 			response.sendRedirect("/board/list");
 			return;
 		}
+
+		request.setAttribute("data", BoardDAO.selBoard(i_board));
 		
-		BoardVO param = new BoardVO();
-		param.setI_board(i_board);
-		
-		BoardVO data = BoardDAO.selBoard(i_board);
-		request.setAttribute("data", data);
-		
-		ViewResolver.forwardLoginChk("board/detail", request, response);
+		ViewResolver.forward("board/detail", request, response);
 	}
 
 
