@@ -9,12 +9,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.koreait.pjt.Const;
 import com.koreait.pjt.MyUtils;
 import com.koreait.pjt.ViewResolver;
+import com.koreait.pjt.db.BoardCmtDAO;
 import com.koreait.pjt.db.BoardDAO;
+import com.koreait.pjt.vo.BoardCmtVO;
+import com.koreait.pjt.vo.BoardDomain;
 import com.koreait.pjt.vo.BoardVO;
 import com.koreait.pjt.vo.UserVO;
 
@@ -35,11 +36,14 @@ public class BoardDetailSer extends HttpServlet {
 		
 		String strI_board = request.getParameter("i_board");
 		int i_board = MyUtils.parseStrToInt(strI_board);
-
+		
 		BoardVO param = new BoardVO();
 		param.setI_board(i_board);
+		param.setI_user(loginUser.getI_user());
+
+
 		
-		BoardVO data = BoardDAO.selBoard(i_board);
+		BoardDomain data = BoardDAO.selBoard(param);
 
 		//		단독으로 조회수 올리기 방지! --- [start]
 		ServletContext application = getServletContext();
@@ -57,8 +61,13 @@ public class BoardDetailSer extends HttpServlet {
 			response.sendRedirect("/board/list");
 			return;
 		}
-
-		request.setAttribute("data", BoardDAO.selBoard(i_board));
+		
+		
+		request.setAttribute("data", data);
+		
+		//코멘트 리스트뿌리기
+		List<BoardCmtVO> list = BoardCmtDAO.selCmtList(i_board);
+		request.setAttribute("list", list);
 		
 		ViewResolver.forward("board/detail", request, response);
 	}

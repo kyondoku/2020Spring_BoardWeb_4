@@ -4,9 +4,30 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.koreait.pjt.vo.UserLoginHistoryVO;
 import com.koreait.pjt.vo.UserVO;
 
 public class UserDAO {
+	
+	public static int insUserLoginHistory(UserLoginHistoryVO ulh) {
+		int result = 0;
+		
+		String sql = " INSERT INTO t_user_loginhistory "
+				+ " (i_history, i_user, ip_addr, os, browser)"
+				+ " VALUES"
+				+ " (seq_userloginhistory.nextval, ?, ?, ?, ?) ";
+		
+		return JdbcTemplate.executeUpdate(sql, new JdbcUpdateInterface() {
+			@Override
+			public void update(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, ulh.getI_user());
+				ps.setNString(2, ulh.getIp_addr());
+				ps.setNString(3,  ulh.getOs());
+				ps.setNString(4, ulh.getBrowser());
+			}
+		});
+	}
+	
 	public static int insUser(UserVO param) {
 		int result = 0;
 		
@@ -62,4 +83,29 @@ public class UserDAO {
 			}
 		});
 	}
+	
+//	public static int selUser(UserVO param) {
+//		String sql = " SELECT user_id, nm, email "
+//				+ " FROM t_user "
+//				+ " WHERE i_user = ? ";
+//		
+//		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface( ) {
+//
+//			@Override
+//			public void prepared(PreparedStatement ps) throws SQLException {
+//				ps.setInt(1, param.getI_user());
+//			}
+//
+//			@Override
+//			public int executeQuery(ResultSet rs) throws SQLException {
+//				if(rs.next()) {
+//					String nm = rs.getNString("nm");
+//					param.setNm(nm);
+//				}
+//				return 0;
+//			}
+//			
+//			
+//		})
+//	}
 }

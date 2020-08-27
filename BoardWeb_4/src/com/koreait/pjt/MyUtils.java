@@ -12,6 +12,10 @@ import com.koreait.pjt.vo.UserVO;
 
 public class MyUtils {
 	
+	public static int getIntParameter(HttpServletRequest request, String keyNm) {
+		return parseStrToInt(request.getParameter(keyNm));
+	}
+
 	public static int parseStrToInt(String str) {
 		return parseStrToInt(str, 0);
 	}

@@ -38,7 +38,7 @@ public class BoardRegmodSer extends HttpServlet {
 			BoardVO param = new BoardVO();
 			param.setI_board(i_board);
 			
-			BoardVO data = BoardDAO.selBoard(i_board);
+			BoardVO data = BoardDAO.selBoard(param);
 			request.setAttribute("data", data);
 			
 			ViewResolver.forwardLoginChk("board/regmod", request, response);

@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.koreait.pjt.Const;
+import com.koreait.pjt.MyUtils;
 import com.koreait.pjt.ViewResolver;
 import com.koreait.pjt.db.BoardDAO;
+import com.koreait.pjt.vo.BoardDomain;
 import com.koreait.pjt.vo.BoardVO;
 
 
@@ -22,15 +24,28 @@ public class BoardListSer extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-//		HttpSession hs = request.getSession();
-//	      if(null == hs.getAttribute(Const.LOGIN_USER)) {
-//	         response.sendRedirect("/login");
-//	         return;
-//	      }
-	      
-	    List<BoardVO> list = BoardDAO.selBoardList();
-	    request.setAttribute("list", list);
+		if(MyUtils.isLogout(request)) {
+			response.sendRedirect("/login");
+			return;
+		}
 		
+		int record_cnt = Const.RECORD_CNT;
+		int page = MyUtils.getIntParameter(request, "page");
+		page = page == 0 ? 1 : page;
+		
+		int eldx = page * record_cnt;
+		int sldx = eldx - record_cnt;
+		
+		BoardDomain param = new BoardDomain();
+		param.setRecord_cnt(record_cnt); //한 페이지당 10개
+		param.setPage(page);
+		param.setEldx(eldx);
+		param.setSldx(sldx);
+	     
+	    request.setAttribute("list", BoardDAO.selBoardList(param));
+	    request.setAttribute("page", page);
+	    request.setAttribute("pagingCnt", BoardDAO.selPagingCnt(param));
+
 	    ViewResolver.forwardLoginChk("board/list", request, response);
 		}
 	}
