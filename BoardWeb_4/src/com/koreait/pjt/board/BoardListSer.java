@@ -23,27 +23,40 @@ public class BoardListSer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession hs = (HttpSession)request.getSession();
 		
 		if(MyUtils.isLogout(request)) {
 			response.sendRedirect("/login");
 			return;
 		}
 		
-		int record_cnt = Const.RECORD_CNT;
+		String searchText = request.getParameter("searchText");
+		searchText = (searchText == null ? "": searchText);
+		
 		int page = MyUtils.getIntParameter(request, "page");
 		page = page == 0 ? 1 : page;
 		
-		int eldx = page * record_cnt;
-		int sldx = eldx - record_cnt;
+		int recordCnt = MyUtils.getIntParameter(request, "record_cnt");
+		recordCnt = (recordCnt == 0 ? 10 : recordCnt);
 		
 		BoardDomain param = new BoardDomain();
-		param.setRecord_cnt(record_cnt); //한 페이지당 10개
-		param.setPage(page);
+		param.setRecord_cnt(recordCnt);
+		param.setSearchText("%"+searchText+"%");
+		int pagingCnt = BoardDAO.selPagingCnt(param);
+		
+		//이전 레코드수 값이 있고, 이전 레코드수보다 변경한 레코드 수가 더 크다면 마지막 페이지수로 변경
+		if(page > pagingCnt) {
+			page = pagingCnt;
+		}
+		request.setAttribute("page", page);
+		
+		int eldx = page * recordCnt;
+		int sldx = eldx - recordCnt;
+		
 		param.setEldx(eldx);
 		param.setSldx(sldx);
 	     
 	    request.setAttribute("list", BoardDAO.selBoardList(param));
-	    request.setAttribute("page", page);
 	    request.setAttribute("pagingCnt", BoardDAO.selPagingCnt(param));
 
 	    ViewResolver.forwardLoginChk("board/list", request, response);

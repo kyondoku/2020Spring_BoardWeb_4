@@ -12,6 +12,7 @@ import com.koreait.pjt.Const;
 import com.koreait.pjt.MyUtils;
 import com.koreait.pjt.ViewResolver;
 import com.koreait.pjt.db.BoardDAO;
+import com.koreait.pjt.vo.BoardDomain;
 import com.koreait.pjt.vo.BoardVO;
 import com.koreait.pjt.vo.UserVO;
 
@@ -25,6 +26,12 @@ public class BoardRegmodSer extends HttpServlet {
 		
 		String StrI_board = request.getParameter("i_board");
 		
+		String searchText = request.getParameter("searchText");
+		searchText = (searchText == null ? "": searchText);
+		
+		int recordCnt = MyUtils.getIntParameter(request, "record_cnt");
+		recordCnt = (recordCnt == 0 ? 10 : recordCnt);
+		
 		if(StrI_board == null) {
 			ViewResolver.forwardLoginChk("board/regmod", request, response);
 		} else {
@@ -35,8 +42,10 @@ public class BoardRegmodSer extends HttpServlet {
 				return;
 			}
 			
-			BoardVO param = new BoardVO();
+			BoardDomain param = new BoardDomain();
 			param.setI_board(i_board);
+			param.setRecord_cnt(recordCnt);
+			param.setSearchText("%"+searchText+"%");
 			
 			BoardVO data = BoardDAO.selBoard(param);
 			request.setAttribute("data", data);

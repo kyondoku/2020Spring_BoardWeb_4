@@ -10,7 +10,6 @@ public class BoardVO {
 	private String m_dt;
 	private String nm;
 	
-	
 	public String getNm() {
 		return nm;
 	}

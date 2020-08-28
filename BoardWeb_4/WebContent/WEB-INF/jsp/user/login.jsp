@@ -90,8 +90,8 @@
 		</div>
 		<div class="loginbox">
 			<form id="frm" action="/login" method="post" onsubmit="return chk()">
-				<div><input class="loginspace" type="text" name="user_id" value="${user_id}" autofocus placeholder="아이디를 입력하세요"></div>
-				<div><input class="loginspace" type="password" name="user_pw" placeholder="패스워드를 입력하세요"></div>
+				<div><input class="loginspace" type="text" name="user_id" value="qwert" autofocus placeholder="아이디를 입력하세요"></div>
+				<div><input class="loginspace" type="password" name="user_pw" value="123123" placeholder="패스워드를 입력하세요"></div>
 				<div id="err">${msg}</div>
 			</form>
 				<div class="btncontainer">

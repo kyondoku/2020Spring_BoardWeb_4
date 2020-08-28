@@ -79,15 +79,19 @@ public class BoardDAO {
 				+ " SELECT A.I_BOARD, A.I_USER, B.NM, A.TITLE, A.HITS, "
 				+ " TO_CHAR(A.R_DT,'YYYY/MM/DD HH24:MI') R_DT,"
 				+ " TO_CHAR(A.M_DT,'YYYY/MM/DD HH24:MI') M_DT"
-				+ " FROM T_BOARD4 A LEFT JOIN T_USER B ON A.I_USER = B.I_USER ORDER BY i_board DESC"
-				+ " ) A WHERE ROWNUM <= ?) A WHERE A.rnum > ?" ;
+				+ " FROM T_BOARD4 A LEFT JOIN T_USER B ON A.I_USER = B.I_USER "
+				+ " WHERE A.title LIKE ?"
+				+ " ORDER BY i_board DESC"
+				+ " ) A WHERE ROWNUM <= ?"
+				+ " ) A WHERE A.rnum > ?" ;
 		
 		int result = JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 		
 			@Override
 			public void prepared(PreparedStatement ps) throws SQLException {
-				ps.setInt(1, param.getEldx());
-				ps.setInt(2, param.getSldx());
+				ps.setNString(1, param.getSearchText());
+				ps.setInt(2, param.getEldx());
+				ps.setInt(3, param.getSldx());
 			}
 
 			@Override
@@ -122,13 +126,15 @@ public class BoardDAO {
 	// 페이징 숫자 가져오기
 	public static int selPagingCnt(final BoardDomain param) {
 		
-		String sql = " SELECT CEIL(COUNT(i_board) / ?) FROM t_board4 ";
+		String sql = " SELECT CEIL(COUNT(i_board) / ?) FROM t_board4"
+				+ " WHERE title LIKE ? ";
 		
 		return JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
 			
 			@Override
 			public void prepared(PreparedStatement ps) throws SQLException {
 				ps.setInt(1, param.getRecord_cnt());
+				ps.setNString(2, param.getSearchText());
 			}
 			
 			@Override

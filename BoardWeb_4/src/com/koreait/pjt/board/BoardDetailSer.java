@@ -36,6 +36,10 @@ public class BoardDetailSer extends HttpServlet {
 		
 		String strI_board = request.getParameter("i_board");
 		int i_board = MyUtils.parseStrToInt(strI_board);
+		String searchText = request.getParameter("searchText");
+		searchText = (searchText == null ? "": searchText);
+		int recordCnt = MyUtils.getIntParameter(request, "record_cnt");
+		recordCnt = (recordCnt == 0 ? 10 : recordCnt);
 		
 		BoardVO param = new BoardVO();
 		param.setI_board(i_board);
@@ -44,6 +48,8 @@ public class BoardDetailSer extends HttpServlet {
 
 		
 		BoardDomain data = BoardDAO.selBoard(param);
+		data.setSearchText("%"+searchText+"%");
+		data.setRecord_cnt(recordCnt);
 
 		//		단독으로 조회수 올리기 방지! --- [start]
 		ServletContext application = getServletContext();

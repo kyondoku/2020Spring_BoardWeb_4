@@ -6,10 +6,18 @@ public class BoardDomain extends BoardVO {
 	private int eldx;
 	private int sldx;
 	private int page;
-	
 	private int record_cnt; // 페이지당 나오는 레코드 수(글 수)
+	private String searchText;
 
 	
+	public String getSearchText() {
+		return searchText;
+	}
+
+	public void setSearchText(String searchText) {
+		this.searchText = searchText;
+	}
+
 	public int getPage() {
 		return page;
 	}

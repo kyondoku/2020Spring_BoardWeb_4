@@ -55,9 +55,10 @@
 	
 	.title {
 		padding-left: 20px;
+		width: 600px;
 		border: none;
-		height: 30px;
-		font-size: 24px;
+		height: 34px;
+		font-size: 18px;
 		margin-bottom: 14px;
 	}
 	
@@ -66,6 +67,7 @@
 	}
 	
 	.list {
+		margin-bottom: 20px;
 		background: white;
 		font-size: 16px;
 		border: 1px solid gray;
@@ -92,11 +94,11 @@
 	<div class="container">
 		<div class="content">
 			<div class="err">${msg}</div>
-			<div class="listdiv"><a href="/board/detail?i_board=${data.i_board}"><button class="list">리스트</button></a></div>
+			<div class="listdiv"><a href="/board/list?page=${param.page }&record_cnt=${param.record_cnt}&searchText=${param.searchText}"><button class="list">리스트</button></a></div>
 			<form id="frm" action="regmod" method="post">
 				<input type="hidden" name="i_board" value="${data.i_board}">
-				<div><input class="title" type="text" name="title" value="${data.title}" ></div>
-				<div><textarea name="ctnt" autofocus>${data.ctnt}</textarea></div><hr>
+				<div><input class="title" type="text" name="title" value="${data.title}" placeholder="제목을 입력하세요" autofocus ></div>
+				<div><textarea name="ctnt" placeholder="내용을 입력하세요">${data.ctnt}</textarea></div><hr>
 				<div><input class="submit" type="submit" value="${data == null ? '등록완료' : '수정완료'}"}></div>
 			</form>
 		</div>

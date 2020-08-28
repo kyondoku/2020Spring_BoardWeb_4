@@ -150,13 +150,13 @@
 				<!-- 밑에거 $표시 있는건 세션에 있는거임, 세션은 로그인 성공할때 받는당 -->
 				<c:if test="${loginUser.i_user == data.i_user }">
 					<div class="date">최종수정일 : ${data.r_dt == data.m_dt ? data.r_dt : data.m_dt}</div>
-					<a class="btn" href="/board/regmod?i_board=${data.i_board}">수정</a>
+					<a class="btn" href="/board/regmod?page=${item}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&i_board=${data.i_board}">수정</a>
 					<form id="delFrm" action="/board/del" method="post">
 						<input type="hidden" name="i_board" value="${data.i_board}">
 						<a class="btn" href="#" onclick="submitDel()">삭제</a>
 					</form>
 				</c:if>
-				<a class="btn" href="/board/list">리스트</a>
+				<a class="btn" href="/board/list?page=${param.page }&record_cnt=${param.record_cnt}&searchText=${param.searchText}">리스트</a>
 			</div><hr>
 			<div class="detail">
 				<span class="pointerCursor" onclick="toggleLike(${data.yn_like})">
@@ -182,7 +182,7 @@
 						</div>
 						<div class="rinscmtbox">
 							<div class="rinscmtbox1">
-								<input class="inscmt" type="text" name="cmt" value="${item.cmt}" placeholder="댓글을 입력하세요"><br>
+								<input class="inscmt" type="text" name="cmt" value="${item.cmt}" placeholder="댓글을 입력하세요" autofocus><br>
 							</div>
 							<div class="rinscmtbox2">
 								<input type="submit" class="btn" value="등록">
@@ -240,7 +240,7 @@
 		
 		
 		function toggleLike(yn_like) {
-			location.href='/board/toggleLike?i_board=${data.i_board}&yn_like=' + yn_like			
+			location.href='/board/toggleLike?i_board=${data.i_board}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&yn_like=' + yn_like			
 		}
 	</script>
 </body>

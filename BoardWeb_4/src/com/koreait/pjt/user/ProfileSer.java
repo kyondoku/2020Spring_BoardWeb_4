@@ -1,4 +1,4 @@
-package com.koreait.pjt.board;
+package com.koreait.pjt.user;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -9,32 +9,22 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.koreait.pjt.MyUtils;
 import com.koreait.pjt.ViewResolver;
+import com.koreait.pjt.db.UserDAO;
 import com.koreait.pjt.vo.UserVO;
 
-@WebServlet("/board/profile")
+@WebServlet("/profile")
 public class ProfileSer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	//프로필 화면(나의 프로필 이미지, 이미지 변경 가능한 화면)
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		UserVO loginUser = MyUtils.getLoginUser(request); 
+		request.setAttribute("data", UserDAO.selUser(loginUser.getI_user()));
+		ViewResolver.forward("user/profile", request, response);
 		
-//		String strI_user = request.getParameter("i_user");
-//		int i_user = MyUtils.parseStrToInt(strI_user);
-//		
-//		String user_id = request.getParameter("user_id");
-//		String nm = request.getParameter("nm"); 
-//		String email = request.getParameter("email");
-//
-//		UserVO uv = new UserVO();
-//		uv.setUser_id(user_id);
-//		uv.setNm(nm);
-//		uv.setEmail(email);
-//		
-//		
-//		
-//		
-		ViewResolver.forward("/board/profile", request, response);
 	}
 
+	//이미지 변경 처리
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 	}
