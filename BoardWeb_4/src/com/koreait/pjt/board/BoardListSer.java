@@ -30,6 +30,9 @@ public class BoardListSer extends HttpServlet {
 			return;
 		}
 		
+		String searchType = request.getParameter("searchType");
+		searchType = (searchType == null) ? "a" : searchType;
+		
 		String searchText = request.getParameter("searchText");
 		searchText = (searchText == null ? "": searchText);
 		
@@ -40,7 +43,9 @@ public class BoardListSer extends HttpServlet {
 		recordCnt = (recordCnt == 0 ? 10 : recordCnt);
 		
 		BoardDomain param = new BoardDomain();
+		param.setI_user(MyUtils.getLoginUser(request).getI_user());
 		param.setRecord_cnt(recordCnt);
+		param.setSearchType(searchType);
 		param.setSearchText("%"+searchText+"%");
 		int pagingCnt = BoardDAO.selPagingCnt(param);
 		
@@ -48,6 +53,7 @@ public class BoardListSer extends HttpServlet {
 		if(page > pagingCnt) {
 			page = pagingCnt;
 		}
+		request.setAttribute("searchType", searchType);
 		request.setAttribute("page", page);
 		
 		int eldx = page * recordCnt;
@@ -56,8 +62,21 @@ public class BoardListSer extends HttpServlet {
 		param.setEldx(eldx);
 		param.setSldx(sldx);
 	     
-	    request.setAttribute("list", BoardDAO.selBoardList(param));
-	    request.setAttribute("pagingCnt", BoardDAO.selPagingCnt(param));
+		request.setAttribute("pagingCnt", pagingCnt);
+		
+		List<BoardDomain> list = BoardDAO.selBoardList(param);
+		
+		//하이라이트 처리
+		if(!"".equals(searchText) && ("a".equals(searchType) || "c".equals(searchType))) {
+			for(BoardDomain item : list) {
+				String title = item.getTitle();
+				title = title.replace(searchText
+						, "<span class=\"highlight\">" + searchText + "</span>");
+				item.setTitle(title);
+			}
+		}
+		
+	    request.setAttribute("list", list);
 
 	    ViewResolver.forwardLoginChk("board/list", request, response);
 		}

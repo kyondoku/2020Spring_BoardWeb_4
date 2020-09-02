@@ -50,6 +50,39 @@ public class UserDAO {
 		});
 	}
 	
+	public static int uptUser(UserVO param) {
+		StringBuilder sb = new StringBuilder( " UPDATE t_user SET m_dt = sysdate");
+		
+		if(param.getUser_pw() != null) {
+			sb.append(" , user_pw = '");
+			sb.append(param.getUser_pw());
+			sb.append("' ");
+		}
+		if(param.getNm() != null) {
+			sb.append(" , nm = '");
+			sb.append(param.getNm());
+			sb.append("' ");
+		}
+		if(param.getEmail() != null) {
+			sb.append(" , email = '");
+			sb.append(param.getEmail());
+			sb.append("' ");
+		}
+		if(param.getProfile_img() != null) {
+			sb.append(" ,profile_img = '");
+			sb.append(param.getProfile_img());
+			sb.append("' ");
+		}
+		
+		sb.append(" WHERE i_user = ");
+		sb.append(param.getI_user());
+		
+		return JdbcTemplate.executeUpdate(sb.toString(), new JdbcUpdateInterface() {
+			@Override
+			public void update(PreparedStatement ps) throws SQLException {}
+		});
+	}
+	
 	
 	//0: 에러 발생, 1: 로그인 성공, 2: 비밀번호 틀림, 3: 아이디 없음
 	public static int login(UserVO param) {

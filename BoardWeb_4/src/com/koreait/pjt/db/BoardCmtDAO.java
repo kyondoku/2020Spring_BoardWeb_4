@@ -16,7 +16,8 @@ public class BoardCmtDAO {
 		final List<BoardCmtVO> list = new ArrayList();
 		
 		String sql = " SELECT "
-				+ " B.i_user, B.nm, A.i_cmt, A.cmt,"
+				+ " B.i_user, B.nm, B.profile_img,"
+				+ " A.i_cmt, A.cmt,"
 				+ " TO_CHAR(A.r_dt, 'YYYY/MM/DD HH24:MI') as r_dt,"
 				+ " TO_CHAR(A.m_dt, 'YYYY/MM/DD HH24:MI') as m_dt"
 				+ " from t_board4_cmt A"
@@ -41,6 +42,7 @@ public class BoardCmtDAO {
 					String r_dt = rs.getNString("r_dt");
 					String m_dt = rs.getNString("m_dt");
 					int i_cmt = rs.getInt("i_cmt");
+					String profile_img = rs.getNString("profile_img");
 
 					BoardCmtVO vo = new BoardCmtVO();
 					vo.setI_user(i_user);
@@ -49,6 +51,7 @@ public class BoardCmtDAO {
 					vo.setR_dt(r_dt);
 					vo.setM_dt(m_dt);
 					vo.setI_cmt(i_cmt);
+					vo.setProfile_img(profile_img);
 					
 					list.add(vo);
 				}

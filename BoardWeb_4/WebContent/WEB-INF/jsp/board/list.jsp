@@ -53,7 +53,7 @@
 	
 	table {
 		font-size: 13px;
-		width: 500px;
+		width: 600px;
 		text-align: center;
 		border-collapse: collapse;
 		margin-bottom: 20px;
@@ -116,7 +116,6 @@
 		text-decoration: none;
 	}
 		
-	td { border-collapse: collapse; }
 	
 	.thisPage { 
 		cursor: default;
@@ -130,6 +129,8 @@
 		text-align: right;
 	}
 	
+	td { border-collapse: collapse; }
+	
 	.selRecord select {
 		height: 25px;
 		border-radius: 0;
@@ -139,6 +140,28 @@
 		text-align: center;
 	}
 	
+	.pImg {
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background-position: center;
+	}
+	
+	.containerPImg {
+		display: inline;
+	}
+
+	.iLike {
+		font-size: 10px;
+	}
+	
+	.iLikeVer {
+		padding-bottom: 5px;
+	}
+	
+	.highlight {
+		font-weight: bold;
+	}
 </style>
 </head>
 <body>
@@ -166,22 +189,48 @@
 				<table>
 					<tr class="th">
 						<th>No</th>
-						<th>제목</th>
+						<th> </th>
+						<th style="width: 200px;">제목</th>
 						<th>작성자</th>
 						<th>조회수</th>
+						<th>좋아요</th>
 						<th>작성일</th>
 					</tr><hr>
 					<c:forEach items="${list}" var="item">
 					<tr class="list" onclick="moveToDetail(${item.i_board})">
 						<td>${item.i_board}</td>
-						<td>${item.title}</td>
-						<td>${item.nm}</td>
+						<td class="iLikeVer">
+							<c:choose>
+								<c:when test="${item.yn_like == 1}">
+									<span class="iLike"> ❤️ </span>
+								</c:when>
+								<c:otherwise>
+									 
+								</c:otherwise>
+							</c:choose>
+						</td>
+						<td>
+							${item.title} (${item.cmt_cnt })
+						</td>
+						<td>
+							<div class="containerPImg">
+								<c:choose>
+									<c:when test="${item.profile_img != null}">
+										<img class="pImg" src="/img/user/${item.i_user}/${item.profile_img }">
+									</c:when>
+									<c:otherwise>
+										<img class="pImg" src="/img/default_profile.jpg">
+									</c:otherwise>
+								</c:choose>
+							</div>
+						${item.nm}</td>
 						<td>${item.hits}</td>
+						<td>${item.like_cnt }</td>
 						<td>${item.r_dt == item.m_dt ? item.r_dt : item.m_dt}</td>
 					</tr>
 					</c:forEach>
 				</table><hr>
-				<a href="/board/regmod?page=${item}&record_cnt=${param.record_cnt}&searchText=${param.searchText}"><button class="button">글쓰기</button></a></div>
+				<a href="/board/regmod?page=${item}&record_cnt=${param.record_cnt}&searchType=${searchType}&searchText=${param.searchText}"><button class="button">글쓰기</button></a></div>
 				<div class="fontCenter">
 					<c:forEach var="item" begin="1" end="${pagingCnt}">
 						<div class="pagingFont">
@@ -190,7 +239,7 @@
 								<span class="thisPage">${item}</span>
 							</c:when>
 							<c:otherwise>
-								<a id="page" href="/board/list?page=${item}&record_cnt=${param.record_cnt}&searchText=${param.searchText}">${item}</a>
+								<a id="page" href="/board/list?page=${item}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&searchType=${searchType}">${item}</a>
 							</c:otherwise>
 						</c:choose>
 						</div>
@@ -198,6 +247,11 @@
 				</div>
 				<div class="searchCtr">
 					<form action="/board/list">
+						<select name="searchType">
+							<option value="a" ${searchType == 'a' ? 'selected' : ''}>제목</option>
+							<option value="b" ${searchType == 'b' ? 'selected' : ''}>내용</option>
+							<option value="c" ${searchType == 'c' ? 'selected' : ''}>제목+내용</option>
+						</select>
 						<input type="search" name="searchText" value="${param.searchText }">
 						<input type="submit" value="검색">
 					</form>
@@ -205,19 +259,18 @@
 			</div>
 			<div class="rsub">
 				<p class="title">게시판<br>리스트</p>
-				<div><p class="welcome"><a href="/profile" style="font-weight: bold">${loginUser.nm }</a>님<br>환영합니다</p></div> 
+				<div><p class="welcome"><a href="/profile?i_user=${loginUser.i_user }&searchType=${searchType}&searchText=${param.searchText}&page=${page}&record_cnt=${param.record_cnt}" style="font-weight: bold">${loginUser.nm }</a>님<br>환영합니다</p></div> 
 				<div><button class="button" onclick="check()">로그아웃</button></div>
 				<div class="emoji">🙋‍♂️</div>
 			</div>
 		</div>
-	</div>
 	<script>
 		function changeRecordCnt() {
 			selFrm.submit()
 		}
 	
 		function moveToDetail(i_board) { 
-			location.href = '/board/detail?page=${page}&record_cnt=${param.record_cnt}&searchText=${param.searchText}&i_board=' + i_board
+			location.href = '/board/detail?page=${page}&record_cnt=${param.record_cnt}&searchType=${searchType}&searchText=${param.searchText}&i_board=' + i_board
 		} 
 		
 		function check(){

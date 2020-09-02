@@ -97,7 +97,7 @@
 			<div class="listdiv"><a href="/board/list?page=${param.page }&record_cnt=${param.record_cnt}&searchText=${param.searchText}"><button class="list">리스트</button></a></div>
 			<form id="frm" action="regmod" method="post">
 				<input type="hidden" name="i_board" value="${data.i_board}">
-				<div><input class="title" type="text" name="title" value="${data.title}" placeholder="제목을 입력하세요" autofocus ></div>
+				<div><input class="title" type="text" name="title" value="${data.title}" placeholder="제목을 입력하세요" autofocus maxlength="15" ></div>
 				<div><textarea name="ctnt" placeholder="내용을 입력하세요">${data.ctnt}</textarea></div><hr>
 				<div><input class="submit" type="submit" value="${data == null ? '등록완료' : '수정완료'}"}></div>
 			</form>

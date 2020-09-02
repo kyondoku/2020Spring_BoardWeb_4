@@ -40,16 +40,24 @@ public class BoardDetailSer extends HttpServlet {
 		searchText = (searchText == null ? "": searchText);
 		int recordCnt = MyUtils.getIntParameter(request, "record_cnt");
 		recordCnt = (recordCnt == 0 ? 10 : recordCnt);
+		String searchType = request.getParameter("searchType");
+		searchType = (searchType == null) ? "a" : searchType;
 		
 		BoardVO param = new BoardVO();
 		param.setI_board(i_board);
 		param.setI_user(loginUser.getI_user());
 
-
-		
 		BoardDomain data = BoardDAO.selBoard(param);
+		
+		if(!"".equals(searchText) && ("b".equals(searchType) || "c".equals(searchType))) {
+				String ctnt = data.getCtnt();
+				ctnt = ctnt.replace(searchText
+						, "<span class=\"highlight\">" + searchText + "</span>");
+				data.setCtnt(ctnt);
+			}
 		data.setSearchText("%"+searchText+"%");
 		data.setRecord_cnt(recordCnt);
+		data.setSearchType(searchType);
 
 		//		단독으로 조회수 올리기 방지! --- [start]
 		ServletContext application = getServletContext();
@@ -68,8 +76,9 @@ public class BoardDetailSer extends HttpServlet {
 			return;
 		}
 		
-		
 		request.setAttribute("data", data);
+		
+		
 		
 		//코멘트 리스트뿌리기
 		List<BoardCmtVO> list = BoardCmtDAO.selCmtList(i_board);

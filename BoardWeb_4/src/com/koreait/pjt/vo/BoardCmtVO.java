@@ -9,8 +9,15 @@ public class BoardCmtVO {
 	private String nm;
 	private String r_dt;
 	private String m_dt;
+	private String profile_img;
 	
 	
+	public String getProfile_img() {
+		return profile_img;
+	}
+	public void setProfile_img(String profile_img) {
+		this.profile_img = profile_img;
+	}
 	public String getNm() {
 		return nm;
 	}
