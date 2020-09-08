@@ -114,7 +114,7 @@
 	}
 
 	.infoBtn {
-		margin-left: 265px;
+		margin-left: 200px;
 		height: 40px;
 	}
 
@@ -210,7 +210,7 @@
 			</div>
 			<div>
 				<div class="infoBtn">
-					<a class="button" href="#">수정</a>
+					<a class="button" href="/changePw">비밀번호 변경</a>
 					<a class="button" href="/board/list">뒤로</a>
 				</div>
 				<div class="info">
@@ -265,6 +265,13 @@
 		function moveToDetail(i_board) { 
 			location.href = '/board/detail?page=${page}&record_cnt=${param.record_cnt}&searchType=${param.searchType}&searchText=${param.searchText}&i_board=' + i_board
 		} 
+		
+		var proc = '${param.proc}'
+		switch(proc) {
+		case '1':
+			alert('비밀번호를 변경하였습니다.')
+			break
+		}
 	</script>
 </body>
 </html>

@@ -59,6 +59,13 @@ public class BoardDetailSer extends HttpServlet {
 		data.setRecord_cnt(recordCnt);
 		data.setSearchType(searchType);
 
+		
+		// 좋아요 한사람 리스트
+		
+		List<BoardDomain> like = BoardDAO.selBoardLikeList(i_board);
+		request.setAttribute("like", like);
+		
+		
 		//		단독으로 조회수 올리기 방지! --- [start]
 		ServletContext application = getServletContext();
 //		integer도 int랑 똑같이 쓰면 되는데, integet는 null을 담을수 있다.

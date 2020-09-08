@@ -33,7 +33,7 @@ public class ProfileSer extends HttpServlet {
 			return;
 		}
 		
-		int i_user = MyUtils.getIntParameter(request, "i_user");
+		int i_user = MyUtils.getLoginUser(request).getI_user();
 		
 		UserVO uv = new UserVO();
 		uv.setUser_id(request.getParameter("user_id"));
@@ -68,8 +68,8 @@ public class ProfileSer extends HttpServlet {
 		request.setAttribute("page", page);
 		
 		request.setAttribute("item", UserDAO.selUser(i_user));
-		request.setAttribute("list", BoardDAO.proSelBoardList(param));
 		
+		request.setAttribute("list", BoardDAO.proSelBoardList(param));
 		ViewResolver.forward("user/profile", request, response);
 		
 	}

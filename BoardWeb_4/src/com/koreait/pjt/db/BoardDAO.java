@@ -36,13 +36,20 @@ public class BoardDAO {
 		String sql = " SELECT B.nm, B.profile_img, A.i_user "
 				+ " , A.title, A.ctnt, A.hits, TO_CHAR(A.r_dt, 'YYYY/MM/DD HH24:MI') as r_dt"
 				+ " , TO_CHAR(A.m_dt, 'YYYY/MM/DD HH24:MI') as m_dt "
-				+ " , DECODE(C.i_user, null, 0, 1)as yn_like "
+				+ " , DECODE(C.i_user, null, 0, 1)as yn_like"
+				+ "	, nvl(D.cnt, 0) as like_cnt "
 				+ " FROM t_board4 A"
 				+ " INNER JOIN t_user B"
 				+ " ON A.i_user = B.i_user"
 				+ " LEFT JOIN t_board4_like C "
 				+ " ON A.i_board = C.i_board "
 				+ " AND C.i_user = ? "
+				+ " LEFT JOIN ("
+				+ " 	SELECT i_board, count(i_board) as cnt FROM t_board4_like"
+				+ "		WHERE i_board = ? "
+				+ "		GROUP BY i_board "
+				+ " ) D"
+				+ " ON A.i_board = D.i_board"
 				+ " WHERE A.i_board = ? ";
 		
 		int resultInt = JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
@@ -52,6 +59,7 @@ public class BoardDAO {
 				
 				ps.setInt(1, param.getI_user());
 				ps.setInt(2, param.getI_board());
+				ps.setInt(3, param.getI_board());
 			}
 			
 			@Override
@@ -65,6 +73,7 @@ public class BoardDAO {
 					result.setM_dt(rs.getNString("m_dt"));	
 					result.setNm(rs.getNString("nm"));
 					result.setYn_like(rs.getInt("yn_like"));
+					result.setLike_cnt(rs.getInt("like_cnt"));
 					result.setProfile_img(rs.getNString("profile_img"));
 					
 					}
@@ -142,7 +151,7 @@ public class BoardDAO {
 					String nm = rs.getNString("nm");
 					String r_dt = rs.getNString("r_dt");
 					String profile_img = rs.getNString("profile_img");
-					String like_cnt = rs.getNString("like_cnt");
+					int like_cnt = rs.getInt("like_cnt");
 					String cmt_cnt = rs.getNString("cmt_cnt");
 					int yn_like = rs.getInt("yn_like");
 					
@@ -207,7 +216,7 @@ public class BoardDAO {
 					String nm = rs.getNString("nm");
 					String r_dt = rs.getNString("r_dt");
 					String profile_img = rs.getNString("profile_img");
-					String like_cnt = rs.getNString("like_cnt");
+					int	like_cnt = rs.getInt("like_cnt");
 					String cmt_cnt = rs.getNString("cmt_cnt");
 					
 
@@ -271,6 +280,37 @@ public class BoardDAO {
 		});
 	}
 	
+	public static List<BoardDomain> selBoardLikeList(int i_board) {
+		List<BoardDomain> list = new ArrayList();
+		
+		String sql = " select B.i_user, B.nm, B.profile_img"
+				+ " from t_board4_like A"
+				+ " inner join t_user B"
+				+ " ON a.i_user = b.i_user"
+				+ " where i_board = ?"
+				+ " order by A.r_dt asc";
+		
+		JdbcTemplate.executeQuery(sql, new JdbcSelectInterface() {
+
+			@Override
+			public void prepared(PreparedStatement ps) throws SQLException {
+				ps.setInt(1, i_board);
+			}
+
+			@Override
+			public int executeQuery(ResultSet rs) throws SQLException {
+				while(rs.next()) {
+					BoardDomain vo = new BoardDomain();
+					vo.setI_user(rs.getInt("i_user"));
+					vo.setNm(rs.getNString("nm"));
+					vo.setProfile_img(rs.getNString("profile_img"));
+					list.add(vo);
+				}
+				return 1;
+			}	
+		});
+		return list;
+	}
 	
 	public static int udtBoard(BoardVO param) {
 		String sql = " UPDATE t_board4 "

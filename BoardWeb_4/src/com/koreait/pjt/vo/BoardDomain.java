@@ -9,7 +9,7 @@ public class BoardDomain extends BoardVO {
 	private int record_cnt; // 페이지당 나오는 레코드 수(글 수)
 	private String searchText;
 	private String profile_img;
-	private String like_cnt;
+	private int like_cnt;
 	private String cmt_cnt;
 	private String searchType;
 	
@@ -24,11 +24,11 @@ public class BoardDomain extends BoardVO {
 		this.searchType = searchType;
 	}
 
-	public String getLike_cnt() {
+	public int getLike_cnt() {
 		return like_cnt;
 	}
 
-	public void setLike_cnt(String like_cnt) {
+	public void setLike_cnt(int like_cnt) {
 		this.like_cnt = like_cnt;
 	}
 

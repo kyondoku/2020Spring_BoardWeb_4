@@ -9,6 +9,10 @@
 <meta charset="UTF-8">
 <title>상세 페이지</title>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"
+  />
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap');
 	* {
@@ -63,6 +67,7 @@
 	}
 	
 	.detail {
+		position: relative;
 		padding: 20px;
 		margin-bottom: 10px;
 		box-sizing: border-box;
@@ -79,6 +84,11 @@
 	
 	.hits {
 		text-align: right;
+	}
+	
+	.cursor {
+		cursor: pointer;
+		
 	}
 	
 	.pointerCursor {
@@ -160,6 +170,45 @@
 		color: red;
 		font-weight: bolder;
 	}
+	.likecnt {
+		text-align: right;
+		
+	}
+
+	#id_like:hover #likeListContainer {
+		display: block;
+	}
+	
+	#likeListContainer {
+		border: 1px solid black;
+		position: absolute;
+		display: none;
+		right: 20px;
+		width: 115px;
+		height: 70px;
+		overflow-y: auto;
+		background-color: white;
+		animation: listshow 1s ease normal;
+	}
+
+	#likeListContainer ul li {
+		height: 12px;
+		vertical-align : middle;
+	}
+	
+	.likeList {
+		padding: 10px;
+		text-align: left;
+	}
+	
+	@keyframes listshow {
+			0% {
+				opacity: 0;
+			}
+			100% {
+				opacity: 1;
+			}
+	}
 	
 </style>
 </head>
@@ -187,6 +236,25 @@
 						<span class="material-icons">favorite</span>
 					</c:if>
 				</span>
+				<div id="id_like">
+					<c:if test="${data.like_cnt != 0}">
+						<p class="likecnt"><span class="cursor">${data.like_cnt }</span>명이 좋아합니다</p>
+					</c:if>
+					<div id="likeListContainer">
+						<ul>
+							<c:forEach items="${like}" var="like">
+								<c:choose>
+									<c:when test="${like.profile_img != null}">
+										<li class="likeList"><img class="pImg" src="/img/user/${like.i_user}/${like.profile_img }"> ${like.nm}</li>
+									</c:when>
+									<c:otherwise>
+										<li class="likeList"><img class="pImg" src="/img/default_profile.jpg"> ${like.nm}</li>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</ul>
+					</div>
+				</div>
 				<div class="hits">hits ${data.hits}</div>
 				<div>
 					<span id="elTitle" class="title">${data.title}</span> | 

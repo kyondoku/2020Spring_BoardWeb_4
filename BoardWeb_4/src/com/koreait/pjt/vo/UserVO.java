@@ -7,6 +7,15 @@ public class UserVO {
 	private String nm;
 	private String email;
 	private String profile_img;	
+	private String user_prePw;
+	
+	
+	public String getUser_prePw() {
+		return user_prePw;
+	}
+	public void setUser_prePw(String user_prePw) {
+		this.user_prePw = user_prePw;
+	}
 	public int getI_user() {
 		return i_user;
 	}

@@ -162,6 +162,29 @@
 	.highlight {
 		font-weight: bold;
 	}
+	
+	#likeListContainer {
+		border: 1px solid black;
+		position: absolute;
+		display: none;
+		right: 20px;
+		width: 115px;
+		height: 70px;
+		overflow-y: auto;
+		background-color: white;
+		animation: listshow 1s ease normal;
+	}
+
+	#likeListContainer ul li {
+		height: 12px;
+		vertical-align : middle;
+	}
+	
+	.likeList {
+		padding: 10px;
+		text-align: left;
+
+	
 </style>
 </head>
 <body>
@@ -197,8 +220,8 @@
 						<th>작성일</th>
 					</tr><hr>
 					<c:forEach items="${list}" var="item">
-					<tr class="list" onclick="moveToDetail(${item.i_board})">
-						<td>${item.i_board}</td>
+					<tr class="list" >
+						<td onclick="moveToDetail(${item.i_board})">${item.i_board}</td>
 						<td class="iLikeVer">
 							<c:choose>
 								<c:when test="${item.yn_like == 1}">
@@ -209,10 +232,10 @@
 								</c:otherwise>
 							</c:choose>
 						</td>
-						<td>
+						<td onclick="moveToDetail(${item.i_board})">
 							${item.title} (${item.cmt_cnt })
 						</td>
-						<td>
+						<td onclick="moveToDetail(${item.i_board})">
 							<div class="containerPImg">
 								<c:choose>
 									<c:when test="${item.profile_img != null}">
@@ -224,13 +247,16 @@
 								</c:choose>
 							</div>
 						${item.nm}</td>
-						<td>${item.hits}</td>
-						<td>${item.like_cnt }</td>
-						<td>${item.r_dt == item.m_dt ? item.r_dt : item.m_dt}</td>
+						<td onclick="moveToDetail(${item.i_board})">${item.hits}</td>
+						<td><span onclick="getLikeList(${item.i_board}, ${item.like_cnt }, this)">${item.like_cnt }</span></td>
+						<td onclick="moveToDetail(${item.i_board})">${item.r_dt == item.m_dt ? item.r_dt : item.m_dt}</td>
 					</tr>
 					</c:forEach>
 				</table><hr>
 				<a href="/board/regmod?page=${item}&record_cnt=${param.record_cnt}&searchType=${searchType}&searchText=${param.searchText}"><button class="button">글쓰기</button></a></div>
+				
+				<div id="likeListContainer">
+				</div>
 				<div class="fontCenter">
 					<c:forEach var="item" begin="1" end="${pagingCnt}">
 						<div class="pagingFont">
@@ -264,7 +290,60 @@
 				<div class="emoji">🙋‍♂️</div>
 			</div>
 		</div>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script>
+		let beforeI_board = 0
+		function getLikeList(i_board, cnt, span){
+			if(cnt == 0) {return}
+			
+			if(beforeI_board == i_board) {
+				likeListContainer.style.display = 'none'
+				return
+			} else {
+				beforeI_board = i_board
+				likeListContainer.style.display = 'unset'
+			}			
+
+			const locationX = window.scrollX + span.getBoundingClientRect().left
+			const locationY = window.scrollY + span.getBoundingClientRect().top + 30
+			
+			likeListContainer.style.left = `\${locationX}px`
+			likeListContainer.style.top = `\${locationY}px`
+
+			likeListContainer.innerHTML = ""
+			
+			axios.get('/board/like', {
+				params: {
+					i_board //key, 변수명이 같을때는 이렇게 사용한다 (원래는 i_board = i_board)
+				}
+			}).then(function(res){
+				if(res.data.length > 0) {
+					for(let i=0; i<res.data.length; i++) {
+						const result = makeLikeUser(res.data[i])
+						likeListContainer.innerHTML += result;
+					}		
+				}
+			})
+		}
+	
+		function makeLikeUser(one) {
+			const img = one.profile_img == null ?
+					'<img class="pImg" src="/img/default_profile.jpg">'
+					: 
+					`<img class="pImg" src="/img/user/\${one.i_user}/\${one.profile_img}">`
+			
+			const ele = `<div class="likeItemContainer">
+							<div class="profileContainer">
+								<div class="profile">
+									\${img}
+								</div>
+							</div>
+							<div class="nm">\${one.nm}</div>
+						</div>`
+			
+			return ele
+		}
+		
 		function changeRecordCnt() {
 			selFrm.submit()
 		}
